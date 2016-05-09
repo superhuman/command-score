@@ -23,8 +23,8 @@ var SCORE_CONTINUE_MATCH = 1,
     // very significantly penalized.
     //
     // i.e. "loes" is very unlikely to match "loch ness".
-    // TODO:we might want to consider deleting these completely?
-    SCORE_LONG_JUMP = 0.01,
+    // NOTE: this is set to 0 for superhuman right now, but we may want to revisit.
+    SCORE_LONG_JUMP = 0,
 
     // The goodness of a match should decay slightly with each missing
     // character.
