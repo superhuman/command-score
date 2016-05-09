@@ -2,9 +2,43 @@ Yet another javascript fuzzy string matching library!
 
 We use this in the Superhuman email client in autocompletion contexts where the set of results is relatively bounded, and we want to allow for considerable fuzziness in the matching. See also [trieing](https://github.com/superhuman/trieing), which is used when the set is unbounded or when metrics other than matchiness are most important.
 
+# Installation
+
+```
+npm install command-score
+```
+
+# Usage
+
+```
+var commandScore = require('command-score');
+
+function getMatches (query) {
+
+    var items = ["red", "green", "gold", blue"];
+    var results = [];
+
+    items.forEach(function (item) {
+        var score = commandScore(item, query)
+        if (score > 0) {
+            results.push({score: score, item: item});
+        }
+    })
+    return results.sort(function (a, b) {
+        if (a.score === b.score) {
+            return a.item.localeCompare(b.item);
+        }
+        return b.score - a.score;
+    }).map(function (suggestion) {
+        return suggestion.item;
+    });
+
+}
+```
+
 # Behaviour
 
-Given a query and a string to match against, returns a matchiness score designed to sort strings by how likely the user is to want the string given the query.
+Given a query and a string to match against, returns a matchiness score designed to sort strings by how likely the user is to want the string given the query. The scores are scaled between 0 and 1, and are only designed to be comparable if you keep the query the same and compare the scores against different strings (or, but less usefully, keep the string the same and try different queries).
 
 Care is taken to reduce artificial differences in matchiness scores, so that many strings may end up having the same score for a given query. This lets us use a secondary sort on top of matchiness.
 
