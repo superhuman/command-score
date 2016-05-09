@@ -1,0 +1,34 @@
+{
+  "name": "command-pal",
+  "version": "0.1.0",
+  "description": "Yet another javascript fuzzy matching library",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/superhuman/command-pal.git"
+  },
+  "keywords": [
+    "fuzzy",
+    "fuzzymatch",
+    "match",
+    "string",
+    "search",
+    "autocomplete"
+  ],
+  "author": "Conrad Irwin <conrad@superhuman.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/superhuman/command-pal/issues"
+  },
+  "homepage": "https://github.com/superhuman/command-pal#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5"
+  }
+}
