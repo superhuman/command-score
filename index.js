@@ -23,6 +23,7 @@ var SCORE_CONTINUE_MATCH = 1,
     // very significantly penalized.
     //
     // i.e. "loes" is very unlikely to match "loch ness".
+    // TODO:we might want to consider deleting these completely?
     SCORE_LONG_JUMP = 0.01,
 
     // The goodness of a match should decay slightly with each missing
@@ -57,7 +58,7 @@ var SCORE_CONTINUE_MATCH = 1,
 var IS_GAP_REGEXP = /[\\\/\-_+.# \t"@\[\(\{&]/,
     COUNT_GAPS_REGEXP = /[\\\/\-_+.# \t"@\[\(\{&]/g;
 
-function fuzzyMatchInner(string, abbreviation, lowerString, lowerAbbreviation, stringIndex, abbreviationIndex) {
+function commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation, stringIndex, abbreviationIndex) {
 
     if (abbreviationIndex === abbreviation.length) {
         if (stringIndex === string.length) {
@@ -75,7 +76,7 @@ function fuzzyMatchInner(string, abbreviation, lowerString, lowerAbbreviation, s
 
     while (index >= 0) {
 
-        score = fuzzyMatchInner(string, abbreviation, lowerString, lowerAbbreviation, index + 1, abbreviationIndex + 1);
+        score = commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation, index + 1, abbreviationIndex + 1);
         if (score > highScore) {
             if (index === stringIndex) {
                 score *= SCORE_CONTINUE_MATCH;
@@ -105,7 +106,7 @@ function fuzzyMatchInner(string, abbreviation, lowerString, lowerAbbreviation, s
 
         if (score < SCORE_TRANSPOSITION &&
                 lowerString.charAt(index - 1) === lowerAbbreviation.charAt(abbreviationIndex + 1)) {
-            transposedScore = fuzzyMatchInner(string, abbreviation, lowerString, lowerAbbreviation, index + 1, abbreviationIndex + 2);
+            transposedScore = commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation, index + 1, abbreviationIndex + 2);
 
             if (transposedScore * SCORE_TRANSPOSITION > score) {
                 score = transposedScore * SCORE_TRANSPOSITION;
@@ -122,12 +123,12 @@ function fuzzyMatchInner(string, abbreviation, lowerString, lowerAbbreviation, s
     return highScore;
 }
 
-function fuzzyMatch(string, abbreviation) {
+function commandScore(string, abbreviation) {
     /* NOTE:
      * in the original, we used to do the lower-casing on each recursive call, but this meant that toLowerCase()
      * was the dominating cost in the algorithm, passing both is a little ugly, but considerably faster.
      */
-    return fuzzyMatchInner(string, abbreviation, string.toLowerCase(), abbreviation.toLowerCase(), 0, 0);
+    return commandScoreInner(string, abbreviation, string.toLowerCase(), abbreviation.toLowerCase(), 0, 0);
 }
 
-module.exports = {fuzzyMatch: fuzzyMatch};
+module.exports = commandScore;

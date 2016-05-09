@@ -1,5 +1,5 @@
 {
-  "name": "command-pal",
+  "name": "command-score",
   "version": "0.1.0",
   "description": "Yet another javascript fuzzy matching library",
   "main": "index.js",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/superhuman/command-pal.git"
+    "url": "git+https://github.com/superhuman/command-score.git"
   },
   "keywords": [
     "fuzzy",
@@ -24,9 +24,9 @@
   "author": "Conrad Irwin <conrad@superhuman.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/superhuman/command-pal/issues"
+    "url": "https://github.com/superhuman/command-score/issues"
   },
-  "homepage": "https://github.com/superhuman/command-pal#readme",
+  "homepage": "https://github.com/superhuman/command-score#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^2.4.5"
