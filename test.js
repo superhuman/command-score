@@ -44,4 +44,8 @@ describe("commandScore", function () {
         expect(commandScore("hello", "hle")).to.be.greaterThan(0);
     });
 
+    it('should not match with a trailing letter', function () {
+        expect(commandScore("ss", "sss")).to.equal(0)
+    });
+
 });
