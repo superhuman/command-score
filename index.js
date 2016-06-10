@@ -8,8 +8,10 @@ var SCORE_CONTINUE_MATCH = 1,
     // A new match at the start of a word scores better than a new match
     // elsewhere as it's more likely that the user will type the starts
     // of fragments.
-    // (Our notion of word includes CamelCase and hypen-separated, etc.)
-    SCORE_WORD_JUMP = 0.9,
+    // NOTE: We score word jumps between spaces slightly higher than slashes, brackets
+    // hyphens, etc.
+    SCORE_SPACE_WORD_JUMP = 0.9,
+    SCORE_NON_SPACE_WORD_JUMP = 0.8,
 
     // Any other match isn't ideal, but we include it for completeness.
     SCORE_CHARACTER_JUMP = 0.3,
@@ -44,6 +46,9 @@ var SCORE_CONTINUE_MATCH = 1,
     // 1000 characters are inserted between matches.
     PENALTY_CASE_MISMATCH = 0.9999,
 
+    // Match higher for letters closer to the beginning of the word
+    PENALTY_DISTANCE_FROM_START = 0.9
+
     // If the word has more characters than the user typed, it should
     // be penalised slightly.
     //
@@ -55,8 +60,10 @@ var SCORE_CONTINUE_MATCH = 1,
     // with the number of tokens.
     PENALTY_NOT_COMPLETE = 0.99;
 
-var IS_GAP_REGEXP = /[\\\/\-_+.# \t"@\[\(\{&]/,
-    COUNT_GAPS_REGEXP = /[\\\/\-_+.# \t"@\[\(\{&]/g;
+var IS_GAP_REGEXP = /[\\\/\-_+.#"@\[\(\{&]/,
+    COUNT_GAPS_REGEXP = /[\\\/\-_+.#"@\[\(\{&]/g,
+    IS_SPACE_REGEXP = /\s/,
+    COUNT_SPACE_REGEXP = /\s/g;
 
 function commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation, stringIndex, abbreviationIndex) {
 
@@ -72,7 +79,7 @@ function commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation,
     var index = lowerString.indexOf(abbreviationChar, stringIndex);
     var highScore = 0;
 
-    var score, transposedScore, wordBreaks;
+    var score, transposedScore, wordBreaks, spaceBreaks;
 
     while (index >= 0) {
 
@@ -81,11 +88,17 @@ function commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation,
             if (index === stringIndex) {
                 score *= SCORE_CONTINUE_MATCH;
             } else if (IS_GAP_REGEXP.test(string.charAt(index - 1))) {
-                score *= SCORE_WORD_JUMP;
+                score *= SCORE_NON_SPACE_WORD_JUMP;
                 wordBreaks = string.slice(stringIndex, index - 1).match(COUNT_GAPS_REGEXP);
-                if (wordBreaks && stringIndex > 0) {
-                    score *= Math.pow(PENALTY_SKIPPED, wordBreaks.length);
-                }
+              if (wordBreaks && stringIndex > 0) {
+                score *= Math.pow(PENALTY_SKIPPED, wordBreaks.length);
+              }
+            } else if (IS_SPACE_REGEXP.test(string.charAt(index - 1))) {
+              score *= SCORE_SPACE_WORD_JUMP;
+              spaceBreaks = string.slice(stringIndex, index - 1).match(COUNT_SPACE_REGEXP);
+              if (spaceBreaks && stringIndex > 0) {
+                score *= Math.pow(PENALTY_SKIPPED, spaceBreaks.length);
+              }
             } else if (IS_GAP_REGEXP.test(string.slice(stringIndex, index - 1))) {
                 score *= SCORE_LONG_JUMP;
                 if (stringIndex > 0) {
