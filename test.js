@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var commandScore = require ('./index.js'); 
+var commandScore = require ('./index.js');
 
 /*global describe,it*/
 describe("commandScore", function () {
@@ -38,6 +38,10 @@ describe("commandScore", function () {
 
     it("should penalize more for more missing characters", function () {
         expect(commandScore("hello", "hllo")).to.be.greaterThan(commandScore("hello", "hlo"));
+    });
+
+    it("should penalize more for missing characters than case", function () {
+        expect(commandScore("go to Inbox", "in")).to.be.greaterThan(commandScore("go to Unversity/Societies/CUE/info@cue.org.uk", "in"));
     });
 
     it("should match transpotisions", function () {
