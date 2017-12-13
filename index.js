@@ -21,13 +21,6 @@ var SCORE_CONTINUE_MATCH = 1,
     // i.e. "ouch" is more likely than "curtain" when "uc" is typed.
     SCORE_TRANSPOSITION = 0.1,
 
-    // If the user jumped to half-way through a subsequent word, it should be
-    // very significantly penalized.
-    //
-    // i.e. "loes" is very unlikely to match "loch ness".
-    // NOTE: this is set to 0 for superhuman right now, but we may want to revisit.
-    SCORE_LONG_JUMP = 0,
-
     // The goodness of a match should decay slightly with each missing
     // character.
     //
@@ -99,11 +92,6 @@ function commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation,
               if (spaceBreaks && stringIndex > 0) {
                 score *= Math.pow(PENALTY_SKIPPED, spaceBreaks.length);
               }
-            } else if (IS_GAP_REGEXP.test(string.slice(stringIndex, index - 1))) {
-                score *= SCORE_LONG_JUMP;
-                if (stringIndex > 0) {
-                    score *= Math.pow(PENALTY_SKIPPED, index - stringIndex);
-                }
             } else {
                 score *= SCORE_CHARACTER_JUMP;
                 if (stringIndex > 0) {

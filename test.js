@@ -52,4 +52,9 @@ describe("commandScore", function () {
         expect(commandScore("ss", "sss")).to.equal(0)
     });
 
+    it('should match long jumps', function () {
+        expect(commandScore("go to @QuickFix", "fix")).to.be.greaterThan(0)
+        expect(commandScore("go to Quick Fix", "fix")).to.be.greaterThan(commandScore("go to @QuickFix", "fix"))
+    });
+
 });
