@@ -57,4 +57,7 @@ describe("commandScore", function () {
         expect(commandScore("go to Quick Fix", "fix")).to.be.greaterThan(commandScore("go to @QuickFix", "fix"))
     });
 
+    it('should work well with the presence of an m-dash', function () {
+        expect(commandScore("no go — Windows", "windows")).to.be.greaterThan(0)
+    });
 });
