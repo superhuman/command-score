@@ -49,7 +49,7 @@ describe("commandScore", function () {
     });
 
     it('should not match with a trailing letter', function () {
-        expect(commandScore("ss", "sss")).to.equal(0)
+        expect(commandScore("ss", "sss")).to.equal(0.1)
     });
 
     it('should match long jumps', function () {
@@ -59,5 +59,9 @@ describe("commandScore", function () {
 
     it('should work well with the presence of an m-dash', function () {
         expect(commandScore("no go — Windows", "windows")).to.be.greaterThan(0)
+    });
+
+    it('should be robust to duplicated letters', function () {
+        expect(commandScore("talent", "tall")).to.be.equal(0.099)
     });
 });

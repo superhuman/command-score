@@ -106,7 +106,6 @@ function commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation,
         }
 
         if (score < SCORE_TRANSPOSITION &&
-                lowerString.charAt(index - 1) === lowerAbbreviation.charAt(abbreviationIndex + 1) &&
                 lowerString.charAt(index - 1) !== lowerAbbreviation.charAt(abbreviationIndex)) {
             transposedScore = commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation, index + 1, abbreviationIndex + 2);
 
