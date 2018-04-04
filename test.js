@@ -64,4 +64,8 @@ describe("commandScore", function () {
     it('should be robust to duplicated letters', function () {
         expect(commandScore("talent", "tall")).to.be.equal(0.099)
     });
+
+    it('should not allow extra character before the last', function () {
+        expect(commandScore("tadl", "talent")).to.be.equal(0)
+    });
 });
