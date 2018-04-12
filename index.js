@@ -106,7 +106,10 @@ function commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation,
         }
 
         if (score < SCORE_TRANSPOSITION &&
-                lowerString.charAt(index - 1) !== lowerAbbreviation.charAt(abbreviationIndex)) {
+                (lowerString.charAt(index - 1) === lowerAbbreviation.charAt(abbreviationIndex + 1)) ||
+                lowerAbbreviation.charAt(abbreviationIndex + 1) === lowerAbbreviation.charAt(abbreviationIndex) // allow duplicate letters. Ref #7428
+                && lowerString.charAt(index - 1) !== lowerAbbreviation.charAt(abbreviationIndex)) {
+
             transposedScore = commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation, index + 1, abbreviationIndex + 2);
 
             if (transposedScore * SCORE_TRANSPOSITION > score) {

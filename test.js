@@ -65,7 +65,7 @@ describe("commandScore", function () {
         expect(commandScore("talent", "tall")).to.be.equal(0.099)
     });
 
-    it('should not allow extra character before the last', function () {
-        expect(commandScore("tadl", "talent")).to.be.equal(0)
+    it('should not allow letter insertion', function () {
+        expect(commandScore("talent", "tadlent")).to.be.equal(0)
     });
 });
