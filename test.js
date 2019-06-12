@@ -68,4 +68,8 @@ describe("commandScore", function () {
     it('should not allow letter insertion', function () {
         expect(commandScore("talent", "tadlent")).to.be.equal(0)
     });
+
+  it('should match - with " " characters', function () {
+    expect(commandScore('Auto-Advance', 'Auto Advance')).to.be.equal(0.9999)
+  })
 });
