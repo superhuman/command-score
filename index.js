@@ -40,7 +40,7 @@ var SCORE_CONTINUE_MATCH = 1,
     PENALTY_CASE_MISMATCH = 0.9999,
 
     // Match higher for letters closer to the beginning of the word
-    PENALTY_DISTANCE_FROM_START = 0.9
+    PENALTY_DISTANCE_FROM_START = 0.9,
 
     // If the word has more characters than the user typed, it should
     // be penalised slightly.
@@ -53,10 +53,10 @@ var SCORE_CONTINUE_MATCH = 1,
     // with the number of tokens.
     PENALTY_NOT_COMPLETE = 0.99;
 
-var IS_GAP_REGEXP = /[\\\/\-_+.#"@\[\(\{&]/,
-    COUNT_GAPS_REGEXP = /[\\\/\-_+.#"@\[\(\{&]/g,
-    IS_SPACE_REGEXP = /\s/,
-    COUNT_SPACE_REGEXP = /\s/g;
+var IS_GAP_REGEXP = /[\\\/_+.#"@\[\(\{&]/,
+    COUNT_GAPS_REGEXP = /[\\\/_+.#"@\[\(\{&]/g,
+    IS_SPACE_REGEXP = /[\s-]/,
+    COUNT_SPACE_REGEXP = /[\s-]/g;
 
 function commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation, stringIndex, abbreviationIndex) {
 
@@ -127,12 +127,17 @@ function commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation,
     return highScore;
 }
 
+function formatInput (string) {
+  // convert all valid space characters to space so they match each other
+  return string.toLowerCase().replace(COUNT_SPACE_REGEXP, ' ')
+}
+
 function commandScore(string, abbreviation) {
     /* NOTE:
      * in the original, we used to do the lower-casing on each recursive call, but this meant that toLowerCase()
      * was the dominating cost in the algorithm, passing both is a little ugly, but considerably faster.
      */
-    return commandScoreInner(string, abbreviation, string.toLowerCase(), abbreviation.toLowerCase(), 0, 0);
+  return commandScoreInner(string, abbreviation, formatInput(string), formatInput(abbreviation), 0, 0);
 }
 
 module.exports = commandScore;
