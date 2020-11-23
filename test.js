@@ -69,7 +69,11 @@ describe("commandScore", function () {
         expect(commandScore("talent", "tadlent")).to.be.equal(0)
     });
 
-  it('should match - with " " characters', function () {
-    expect(commandScore('Auto-Advance', 'Auto Advance')).to.be.equal(0.9999)
-  })
+    it('should match - with " " characters', function () {
+        expect(commandScore('Auto-Advance', 'Auto Advance')).to.be.equal(0.9999)
+    });
+
+    it('should score long strings quickly', function () {
+        expect(commandScore("go to this is a really long label that is really longthis is a really long label that is really longthis is a really long label that is really longthis is a really long label that is really long", "this is a")).to.be.equal(0.891)
+    });
 });

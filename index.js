@@ -58,7 +58,7 @@ var IS_GAP_REGEXP = /[\\\/_+.#"@\[\(\{&]/,
     IS_SPACE_REGEXP = /[\s-]/,
     COUNT_SPACE_REGEXP = /[\s-]/g;
 
-function commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation, stringIndex, abbreviationIndex) {
+function commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation, stringIndex, abbreviationIndex, memoizedResults) {
 
     if (abbreviationIndex === abbreviation.length) {
         if (stringIndex === string.length) {
@@ -66,6 +66,11 @@ function commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation,
 
         }
         return PENALTY_NOT_COMPLETE;
+    }
+
+    var memoizeKey = `${stringIndex},${abbreviationIndex}`;
+    if (memoizedResults[memoizeKey] !== undefined) {
+        return memoizedResults[memoizeKey];
     }
 
     var abbreviationChar = lowerAbbreviation.charAt(abbreviationIndex);
@@ -76,7 +81,7 @@ function commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation,
 
     while (index >= 0) {
 
-        score = commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation, index + 1, abbreviationIndex + 1);
+        score = commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation, index + 1, abbreviationIndex + 1, memoizedResults);
         if (score > highScore) {
             if (index === stringIndex) {
                 score *= SCORE_CONTINUE_MATCH;
@@ -110,7 +115,7 @@ function commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation,
                 lowerAbbreviation.charAt(abbreviationIndex + 1) === lowerAbbreviation.charAt(abbreviationIndex) // allow duplicate letters. Ref #7428
                 && lowerString.charAt(index - 1) !== lowerAbbreviation.charAt(abbreviationIndex)) {
 
-            transposedScore = commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation, index + 1, abbreviationIndex + 2);
+            transposedScore = commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation, index + 1, abbreviationIndex + 2, memoizedResults);
 
             if (transposedScore * SCORE_TRANSPOSITION > score) {
                 score = transposedScore * SCORE_TRANSPOSITION;
@@ -124,6 +129,7 @@ function commandScoreInner(string, abbreviation, lowerString, lowerAbbreviation,
         index = lowerString.indexOf(abbreviationChar, index + 1);
     }
 
+    memoizedResults[memoizeKey] = highScore;
     return highScore;
 }
 
@@ -137,7 +143,7 @@ function commandScore(string, abbreviation) {
      * in the original, we used to do the lower-casing on each recursive call, but this meant that toLowerCase()
      * was the dominating cost in the algorithm, passing both is a little ugly, but considerably faster.
      */
-  return commandScoreInner(string, abbreviation, formatInput(string), formatInput(abbreviation), 0, 0);
+  return commandScoreInner(string, abbreviation, formatInput(string), formatInput(abbreviation), 0, 0, {});
 }
 
 module.exports = commandScore;
