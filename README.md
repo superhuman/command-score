@@ -10,7 +10,7 @@ npm install command-score
 
 # Usage
 
-```
+```js
 var commandScore = require('command-score');
 
 function getMatches (query) {
